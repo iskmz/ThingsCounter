@@ -27,6 +27,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.time.chrono.ChronoLocalDateTime
 import java.util.*
+import javax.xml.parsers.FactoryConfigurationError
 
 
 /////////////////////////// DATA classes ( & SQLLITE) ////////////////////////////////////////
@@ -225,6 +226,16 @@ class MainActivity : AppCompatActivity() {
         autosaveCounter()
         finish()
     }
+
+
+    override fun onBackPressed() {
+        // do nothing // override to do nothing
+    }
+
+    override fun onDestroy() {
+        autosaveCounter()
+        super.onDestroy()
+    }
 }
 
 /////////////////////////// FRAGMENTS ///////////////////////////////////////
@@ -288,8 +299,9 @@ class AddCounterFragment : Fragment(){
 
     companion object {
         private val F_LIST = listOf(1,2,3,5,10,50,100,1000) // factor list //
-        private var FACTOR = 1 // default factor for counting , ( +/- 1 )
-        private var DELAY_LONG_CLICK:Long = 100 // in msec
+        const val DELAY_LONG_CLICK:Long = 100 // in msec
+
+        var FACTOR = 1 // default factor for counting , ( +/- 1 )
     }
 
     private lateinit var myView : View
@@ -308,6 +320,7 @@ class AddCounterFragment : Fragment(){
     }
 
     private fun setFields() {
+            FACTOR = 1 // reset on fragment start
             txtCounterName_Add.text =  thingsCounted[CURRENT_POS].name
             txtCounterValue_Add.text = thingsCounted[CURRENT_POS].count.toString()
     }
@@ -319,8 +332,29 @@ class AddCounterFragment : Fragment(){
         btnCountDown.setOnClickListener {  decrement(); updateCounterView() }
         btnCountDown.setOnLongClickListener {  doIt(-1,btnCountDown); false}
 
-        btnAdjustCountFactor.setOnClickListener { // TODO
-             }
+        btnAdjustCountFactor.setOnClickListener { showFactorChoice() }
+
+        txtCounterValue_Add.setOnLongClickListener {
+            thingsCounted[CURRENT_POS].count = 0
+            updateCounterView()
+            true
+        }
+    }
+
+    private fun showFactorChoice() {
+        val choice = AlertDialog.Builder(activity!!)
+            .setTitle("  X counting factor X")
+            .setIcon(R.drawable.ic_factor_dialog)
+            .setItems(F_LIST.map{it.toString()+"x"}.toTypedArray()){
+                    dialog, which -> setFactor(F_LIST[which]); dialog.dismiss() }.create()
+        choice.setCanceledOnTouchOutside(false)
+        choice.show()
+    }
+
+    private fun setFactor(f: Int)
+    {
+        FACTOR = f
+        Toast.makeText(activity!!,"Counting Factor ${FACTOR}x was selected!",Toast.LENGTH_LONG).show()
     }
 
     private fun doIt(switcher: Int, v:View) {
