@@ -231,6 +231,8 @@ class AddCounterFragment : Fragment(){
 
     private lateinit var myView : View
 
+    private var FACTOR:Int = 1 // default factor for counting , ( +/- 1 )
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         myView = inflater.inflate(R.layout.frag_add_counter ,container,false)
         return myView

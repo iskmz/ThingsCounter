@@ -27,24 +27,24 @@
                   android:id="@+id/layButtonsSection" android:layout_weight="1">
 
         <ImageButton android:layout_width="50dp"  android:layout_height="50dp"
-        android:layout_alignParentBottom="true" android:layout_centerHorizontal="true"
-                     android:layout_marginBottom="10dp" android:src="@drawable/ic_factor_adjust"
+        android:layout_alignParentTop="true" android:layout_centerHorizontal="true"
+                     android:layout_marginTop="10dp" android:src="@drawable/ic_factor_adjust"
         android:background="#00000000" android:scaleType="fitXY" android:tint="#150050"
         android:id="@+id/btnAdjustCountFactor"/>
 
         <ImageButton android:layout_width="80dp" android:layout_height="80dp"
         android:layout_toEndOf="@id/btnAdjustCountFactor" android:layout_centerVertical="true"
-        android:src="@drawable/ic_arrow_up" android:background="#00000000"
+        android:src="@drawable/ic_arrow_up" android:background="@drawable/back_button"
                      android:layout_marginStart="10dp"
-        android:scaleType="fitXY" android:scaleX="2" android:scaleY="2"
+        android:scaleType="fitXY" android:scaleX="1" android:scaleY="1"
                      android:tint="#25B625"
         android:id="@+id/btnCountUp"/>
 
         <ImageButton android:layout_width="80dp" android:layout_height="80dp"
                      android:layout_toStartOf="@id/btnAdjustCountFactor" android:layout_centerVertical="true"
-                     android:src="@drawable/ic_arrow_down" android:background="#00000000"
+                     android:src="@drawable/ic_arrow_down" android:background="@drawable/back_button"
                      android:layout_marginEnd="10dp"
-                     android:scaleType="fitXY" android:scaleX="2" android:scaleY="2"
+                     android:scaleType="fitXY" android:scaleX="1" android:scaleY="1"
                      android:tint="#EB1C0D"
                      android:id="@+id/btnCountDown"/>
 
