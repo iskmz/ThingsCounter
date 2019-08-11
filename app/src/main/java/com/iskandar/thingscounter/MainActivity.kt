@@ -30,6 +30,8 @@ import java.util.*
 
 /////////////////////////// DATA classes ( & SQLLITE) ////////////////////////////////////////
 
+var CURRENT_POS = -1 // pos of current "thing" the list // -1 is initial condition //
+var AUTOSAVE_NEEDED = false // to know if to autosave or not !!
 
 data class Thing(var dateTime: Long, var name:String, var count:Int)
 var thingsCounted = mutableListOf<Thing>()
@@ -149,15 +151,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun autosaveCounter() {
-        if(AddCounterFragment.CURRENT_POS != -1 ) // i.e. if "updated" or "added" a counter //
+        if(CURRENT_POS != -1 && AUTOSAVE_NEEDED) // i.e. if "updated" or "added" a counter //
         {
-            val current = thingsCounted[AddCounterFragment.CURRENT_POS] // ref. to current counter
+            val current = thingsCounted[CURRENT_POS] // ref. to current counter
             CountersDB(this@MainActivity).updateCounterNow(current.dateTime,current.name,current.count)
             // only db needs to be updated, cause list is re-loaded automatically ! onFragment START //
+            AUTOSAVE_NEEDED = false // return to default state after saving //
         }
     }
 
     private fun dialogAddNewCounter() {
+
         fun checkNameOK(str: String):Boolean = str.isNotBlank() // only check at the moment ! //
 
         val v = LayoutInflater.from(this@MainActivity).inflate(R.layout.dialog_add_new_counter,null)
@@ -178,13 +182,14 @@ class MainActivity : AppCompatActivity() {
                 // add it to db
                 CountersDB(this@MainActivity).addCounterData(thing.dateTime.toString(),thing.name,thing.count)
 
-                // argument to pass to AddCounterFragment // for communication ! //
-                AddCounterFragment.CURRENT_POS = thingsCounted.size-1  // to load from this pos
+                CURRENT_POS = thingsCounted.size-1  // to load from this pos
 
                 // now we can safely go to AddCounterFragment
                 btnAddCounter.visibility = View.GONE
                 btnBackToList.visibility = View.VISIBLE
                 switchTo(addCounterFragment, TAG_FRAG_ADDCOUNTER)
+
+                AUTOSAVE_NEEDED = true // to autosave when done or finished app. //
 
                 // close dialog when done
                 dialogCounterName.dismiss()
@@ -281,7 +286,6 @@ class CountersFragment : Fragment(){
 class AddCounterFragment : Fragment(){
 
     companion object {
-        var CURRENT_POS = -1 // pos of Thing in the list thingsCounted !! //
         private var FACTOR = 1 // default factor for counting , ( +/- 1 )
     }
 
@@ -351,8 +355,8 @@ class CountersAdapter(private val context:Context) : BaseAdapter() {
     }
 
     private fun updateCounter(pos: Int) {
-        // argument to pass to AddCounterFragment // for communication ! //
-        AddCounterFragment.CURRENT_POS = pos  // to load from this pos
+        CURRENT_POS = pos  // to load from this pos
+        AUTOSAVE_NEEDED = true // to autosave when done or finished app. //
         // now we can safely go to AddCounterFragment
         val btnAddC = (context as MainActivity).window.decorView.rootView.findViewById<ImageButton>(R.id.btnAddCounter)
         val btnBackLst = context.window.decorView.rootView.findViewById<ImageButton>(R.id.btnBackToList)

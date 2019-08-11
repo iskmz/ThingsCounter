@@ -6,33 +6,38 @@
 
 
     <TextView android:layout_width="200dp" android:layout_height="wrap_content"
+              android:paddingStart="5dp"
     android:maxLines="2" android:text="this is a counter name text to be entered by user ... bla bla bla .."
     android:textColor="#000000" android:textStyle="italic"
+              android:paddingTop="10dp"
               android:layout_alignParentStart="true" android:layout_alignParentTop="true"
               android:textSize="14sp"
     android:id="@+id/txtItemCounterName"/>
 
-    <LinearLayout android:layout_width="2dp" android:layout_height="wrap_content"
+    <!--
+    <LinearLayout android:layout_width="1dp" android:layout_height="wrap_content"
                   android:layout_alignTop="@id/txtItemCounterName"
                   android:layout_toEndOf="@id/txtItemCounterName"
                   android:layout_alignBottom="@id/txtItemCounterTime" android:orientation="vertical"
-                  android:layout_marginStart="5dp" android:background="#9E9999"
+                  android:layout_marginStart="5dp" android:background="#2196F3"
                   android:id="@+id/txtItemSeparator"/>
+-->
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-    android:layout_toEndOf="@id/txtItemSeparator" android:layout_marginStart="10dp"
+    android:layout_toEndOf="@id/txtItemCounterName" android:layout_marginStart="10dp"
     android:text="999,999,999" android:textColor="#000000" android:textStyle="bold"
     android:textSize="18sp" android:layout_centerVertical="true"
     android:id="@+id/txtItemCounterValue"/>
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
               android:textSize="12sp" android:layout_below="@id/txtItemCounterName"
-              android:layout_marginTop="5dp"
+              android:layout_marginTop="5dp" android:paddingStart="5dp"
               android:textStyle="italic" android:textColor="#0C1D79" android:text="YYYY-MM-DD , HH:mm:ss"
+              android:paddingBottom="15dp"
     android:id="@+id/txtItemCounterTime"/>
 
     <ImageButton android:layout_width="25dp" android:layout_height="25dp" android:src="@drawable/ic_remove"
-    android:scaleType="fitXY" android:background="#00000000" android:tint="#E40E0E"
+    android:scaleType="fitXY" android:background="#00000000" android:tint="#850A0A"
     android:layout_alignParentEnd="true" android:layout_alignBottom="@id/txtItemCounterTime"
     android:id="@+id/btnCounterRemove"/>
 
