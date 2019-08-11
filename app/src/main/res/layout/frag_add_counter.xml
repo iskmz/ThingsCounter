@@ -5,20 +5,20 @@
 
 
     <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-    android:id="@+id/layNameSection" android:layout_weight="1" android:orientation="horizontal">
+    android:id="@+id/layNameSection" android:layout_weight="2" android:orientation="horizontal">
 
         <TextView android:layout_width="match_parent" android:layout_height="match_parent"
         android:gravity="center" android:text="NAME of the COUNTER" android:textColor="#000000"
-        android:textSize="20sp" android:textStyle="bold"
+        android:textSize="22sp" android:textStyle="italic"
         android:id="@+id/txtCounterName_Add"/>
     </LinearLayout>
 
     <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                  android:id="@+id/layCounterSection" android:layout_weight="1" android:orientation="horizontal">
+                  android:id="@+id/layCounterSection" android:layout_weight="2" android:orientation="horizontal">
 
         <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-                  android:gravity="center" android:text="Value of the COUNTER" android:textColor="#FA3D00"
-                  android:textSize="26sp"
+                  android:gravity="center" android:text="999,999,999" android:textColor="#FA3D00"
+                  android:textSize="50sp" android:textStyle="bold"
                   android:id="@+id/txtCounterValue_Add"/>
 
     </LinearLayout>
@@ -27,23 +27,25 @@
                   android:id="@+id/layButtonsSection" android:layout_weight="1">
 
         <ImageButton android:layout_width="50dp"  android:layout_height="50dp"
-        android:layout_alignParentTop="true" android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
                      android:layout_marginTop="10dp" android:src="@drawable/ic_factor_adjust"
         android:background="#00000000" android:scaleType="fitXY" android:tint="#150050"
         android:id="@+id/btnAdjustCountFactor"/>
 
-        <ImageButton android:layout_width="80dp" android:layout_height="80dp"
-        android:layout_toEndOf="@id/btnAdjustCountFactor" android:layout_centerVertical="true"
+        <ImageButton android:layout_width="90dp" android:layout_height="90dp"
+        android:layout_toEndOf="@id/btnAdjustCountFactor"
+                     android:layout_alignTop="@id/btnAdjustCountFactor"
         android:src="@drawable/ic_arrow_up" android:background="@drawable/back_button"
-                     android:layout_marginStart="10dp"
+                     android:layout_marginStart="10dp" android:layout_marginTop="40dp"
         android:scaleType="fitXY" android:scaleX="1" android:scaleY="1"
                      android:tint="#25B625"
         android:id="@+id/btnCountUp"/>
 
-        <ImageButton android:layout_width="80dp" android:layout_height="80dp"
-                     android:layout_toStartOf="@id/btnAdjustCountFactor" android:layout_centerVertical="true"
+        <ImageButton android:layout_width="90dp" android:layout_height="90dp"
+                     android:layout_toStartOf="@id/btnAdjustCountFactor"
+                     android:layout_alignTop="@id/btnAdjustCountFactor"
                      android:src="@drawable/ic_arrow_down" android:background="@drawable/back_button"
-                     android:layout_marginEnd="10dp"
+                     android:layout_marginEnd="10dp" android:layout_marginTop="40dp"
                      android:scaleType="fitXY" android:scaleX="1" android:scaleY="1"
                      android:tint="#EB1C0D"
                      android:id="@+id/btnCountDown"/>

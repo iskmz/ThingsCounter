@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.ImageButton
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_add_new_counter.view.*
@@ -148,7 +149,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun autosaveCounter() {
-        // TODO
+        if(AddCounterFragment.CURRENT_POS != -1 ) // i.e. if "updated" or "added" a counter //
+        {
+            val current = thingsCounted[AddCounterFragment.CURRENT_POS] // ref. to current counter
+            CountersDB(this@MainActivity).updateCounterNow(current.dateTime,current.name,current.count)
+            // only db needs to be updated, cause list is re-loaded automatically ! onFragment START //
+        }
     }
 
     private fun dialogAddNewCounter() {
@@ -192,7 +198,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun switchTo(frg: Fragment, tag: String) {
+    fun switchTo(frg: Fragment, tag: String) {
         fm.beginTransaction()
             .replace(R.id.layContainer, frg,tag)
             .commit()
@@ -210,8 +216,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun saveThenExit() {
-        // code to AUTO-SAVE data for later
-        // need to check if add-counter fragment is ON first ! // maybe a boolean would do the job ! // onhiddenshow ?!!? //
+        autosaveCounter()
         finish()
     }
 }
@@ -276,7 +281,7 @@ class CountersFragment : Fragment(){
 class AddCounterFragment : Fragment(){
 
     companion object {
-        var CURRENT_POS = 0 // pos of Thing in the list thingsCounted !! //
+        var CURRENT_POS = -1 // pos of Thing in the list thingsCounted !! //
         private var FACTOR = 1 // default factor for counting , ( +/- 1 )
     }
 
@@ -346,10 +351,18 @@ class CountersAdapter(private val context:Context) : BaseAdapter() {
     }
 
     private fun updateCounter(pos: Int) {
-
-        // TODO
-        // switch to add fragment and load "pos" counter values there !
-
+        // argument to pass to AddCounterFragment // for communication ! //
+        AddCounterFragment.CURRENT_POS = pos  // to load from this pos
+        // now we can safely go to AddCounterFragment
+        val btnAddC = (context as MainActivity).window.decorView.rootView.findViewById<ImageButton>(R.id.btnAddCounter)
+        val btnBackLst = context.window.decorView.rootView.findViewById<ImageButton>(R.id.btnBackToList)
+        btnAddC.visibility = View.GONE
+        btnBackLst.visibility = View.VISIBLE
+        val fm = context.supportFragmentManager
+        val frag = fm.findFragmentByTag(MainActivity.TAG_FRAG_ADDCOUNTER)!!
+        fm.beginTransaction()
+            .replace(R.id.layContainer, frag)
+            .commit()
     }
 
     private fun dialogRemoveQuery(pos: Int) {
