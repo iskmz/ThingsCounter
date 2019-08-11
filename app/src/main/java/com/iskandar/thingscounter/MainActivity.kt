@@ -15,7 +15,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.dialog_add_new_counter.view.*
+import kotlinx.android.synthetic.main.frag_add_counter.*
 import kotlinx.android.synthetic.main.frag_counters.*
 import kotlinx.android.synthetic.main.item_counter.view.*
 import java.io.File
@@ -27,10 +30,10 @@ import java.util.*
 /////////////////////////// DATA classes ( & SQLLITE) ////////////////////////////////////////
 
 
-data class Thing(val dateTime: Long, val name:String, val count:Int)
+data class Thing(var dateTime: Long, var name:String, var count:Int)
 var thingsCounted = mutableListOf<Thing>()
 
-class CountersDB(context: Context) : SQLiteOpenHelper(context,"counters.db",null,1)
+open class CountersDB(context: Context) : SQLiteOpenHelper(context,"counters.db",null,1)
 {
     private val db = writableDatabase
 
@@ -64,10 +67,12 @@ class CountersDB(context: Context) : SQLiteOpenHelper(context,"counters.db",null
 
     fun getCountersTable(): Cursor = db.rawQuery("SELECT * FROM $TABLE_NAME",null)
 
-    fun addCounterNow(name : String, count : Int) : Boolean {
+    fun addCounterNow(name : String, count : Int) : Boolean =
+        addCounterData(System.currentTimeMillis().toString(),name,count)
+
+    fun addCounterData(datetime:String,name:String,count:Int):Boolean {
         //create instance of ContentValues to hold our values
         val myValues = ContentValues()
-        val datetime = System.currentTimeMillis().toString()
         //insert data by key and value
         myValues.put(COL_DATETIME,datetime)
         myValues.put(COL_NAME,name)
@@ -132,17 +137,55 @@ class MainActivity : AppCompatActivity() {
         btnExit.setOnClickListener { saveThenExit() }
         btnAbout.setOnClickListener { showInfoDialog() }
 
-        btnAddCounter.setOnClickListener {
-            it.visibility = View.GONE
-            btnBackToList.visibility = View.VISIBLE
-            switchTo(addCounterFragment, TAG_FRAG_ADDCOUNTER)
-        }
+        btnAddCounter.setOnClickListener { dialogAddNewCounter() }
 
         btnBackToList.setOnClickListener {
+            autosaveCounter()
             it.visibility = View.GONE
             btnAddCounter.visibility = View.VISIBLE
             switchTo(countersFragment, TAG_FRAG_COUNTERS)
         }
+    }
+
+    private fun autosaveCounter() {
+        // TODO
+    }
+
+    private fun dialogAddNewCounter() {
+        fun checkNameOK(str: String):Boolean = str.isNotBlank() // only check at the moment ! //
+
+        val v = LayoutInflater.from(this@MainActivity).inflate(R.layout.dialog_add_new_counter,null)
+        val dialogCounterName = AlertDialog.Builder(this@MainActivity)
+            .setView(v)
+            .setTitle("NEW Counter !")
+            .setIcon(R.drawable.ic_text_fields_cyan)
+            .create()
+        dialogCounterName.setCanceledOnTouchOutside(false)
+        v.btnCancelCounterName.setOnClickListener { dialogCounterName.dismiss() }
+        v.btnConfirmCounterName.setOnClickListener {
+            if(checkNameOK(v.txtInputCounterName.text.toString()))
+            {
+                // create new 'thing' to count //
+                val thing = Thing(System.currentTimeMillis(), v.txtInputCounterName.text.toString(),0)
+                // add it to the end of the list
+                thingsCounted.add(thing)
+                // add it to db
+                CountersDB(this@MainActivity).addCounterData(thing.dateTime.toString(),thing.name,thing.count)
+
+                // argument to pass to AddCounterFragment // for communication ! //
+                AddCounterFragment.CURRENT_POS = thingsCounted.size-1  // to load from this pos
+
+                // now we can safely go to AddCounterFragment
+                btnAddCounter.visibility = View.GONE
+                btnBackToList.visibility = View.VISIBLE
+                switchTo(addCounterFragment, TAG_FRAG_ADDCOUNTER)
+            }
+            else
+            {
+                Toast.makeText(this@MainActivity,"INVALID / EMPTY Counter Name !",Toast.LENGTH_LONG).show()
+            }
+        }
+        dialogCounterName.show()
     }
 
 
@@ -229,13 +272,50 @@ class CountersFragment : Fragment(){
 
 class AddCounterFragment : Fragment(){
 
+    companion object {
+        var CURRENT_POS = 0 // pos of Thing in the list thingsCounted !! //
+        private var FACTOR = 1 // default factor for counting , ( +/- 1 )
+    }
+
     private lateinit var myView : View
 
-    private var FACTOR:Int = 1 // default factor for counting , ( +/- 1 )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         myView = inflater.inflate(R.layout.frag_add_counter ,container,false)
         return myView
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        setFields()
+        setListeners()
+    }
+
+    private fun setFields() {
+            txtCounterName_Add.text =  thingsCounted[CURRENT_POS].name
+            txtCounterValue_Add.text = thingsCounted[CURRENT_POS].count.toString()
+    }
+
+    private fun setListeners() {
+        btnCountUp.setOnClickListener {  increment(); updateCounterView() }
+        btnCountUp.setOnLongClickListener{ true}
+
+        btnCountDown.setOnClickListener {  decrement(); updateCounterView() }
+        btnCountDown.setOnLongClickListener {  true}
+
+        btnAdjustCountFactor.setOnClickListener {  }
+    }
+
+    private fun updateCounterView() {
+        txtCounterValue_Add.text = thingsCounted[CURRENT_POS].count.toString()
+    }
+
+
+    private fun increment() { thingsCounted[CURRENT_POS].count += FACTOR }
+    private fun decrement() {
+        val tmp = thingsCounted[CURRENT_POS].count - FACTOR
+        thingsCounted[CURRENT_POS].count = if (tmp<=0) 0 else tmp
     }
 }
 
