@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.SystemClock
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AlertDialog
@@ -286,7 +287,9 @@ class CountersFragment : Fragment(){
 class AddCounterFragment : Fragment(){
 
     companion object {
+        private val F_LIST = listOf(1,2,3,5,10,50,100,1000) // factor list //
         private var FACTOR = 1 // default factor for counting , ( +/- 1 )
+        private var DELAY_LONG_CLICK:Long = 100 // in msec
     }
 
     private lateinit var myView : View
@@ -311,12 +314,27 @@ class AddCounterFragment : Fragment(){
 
     private fun setListeners() {
         btnCountUp.setOnClickListener {  increment(); updateCounterView() }
-        btnCountUp.setOnLongClickListener{ true}
+        btnCountUp.setOnLongClickListener{ doIt(1,btnCountUp); false}
 
         btnCountDown.setOnClickListener {  decrement(); updateCounterView() }
-        btnCountDown.setOnLongClickListener {  true}
+        btnCountDown.setOnLongClickListener {  doIt(-1,btnCountDown); false}
 
-        btnAdjustCountFactor.setOnClickListener {  }
+        btnAdjustCountFactor.setOnClickListener { // TODO
+             }
+    }
+
+    private fun doIt(switcher: Int, v:View) {
+        Thread(Runnable{
+            while(true)
+            {
+                SystemClock.sleep(DELAY_LONG_CLICK)
+                activity!!.runOnUiThread {
+                    if(switcher==1) { increment() } else { decrement() }
+                    updateCounterView()
+                }
+                if (!v.isPressed) break // breaks when button is released ! //
+            }
+        }).start()
     }
 
     private fun updateCounterView() {
