@@ -1,20 +1,21 @@
 <RelativeLayout
         android:layout_width="250dp" android:layout_height="wrap_content"
-        android:background="#000000" xmlns:android="http://schemas.android.com/apk/res/android">
+        xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <EditText android:layout_width="200dp" android:layout_height="wrap_content"
-              android:layout_centerHorizontal="true" android:layout_margin="10dp"
-            android:hint="name of counter..." android:textSize="18sp"
-            android:maxLines="1" android:scrollbars="horizontal"
+    <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+              android:layout_centerHorizontal="true" android:layout_margin="15dp"
+              android:hint="name of counter..." android:textSize="18sp"
+              android:maxLines="1" android:scrollbars="horizontal" android:lines="1"
+              android:inputType="text"
               android:scrollbarAlwaysDrawHorizontalTrack="true"
-            android:id="@+id/txtInputCounterName"/>
+              android:id="@+id/txtInputCounterName"/>
 
     <Button android:layout_width="wrap_content" android:layout_height="wrap_content"
-    android:text="Cancel" android:textAllCaps="false" android:layout_below="@id/txtInputCounterName"
-    android:layout_marginTop="10dp" android:layout_alignStart="@id/txtInputCounterName"
-    android:id="@+id/btnCancelCounterName" android:background="@drawable/back_counter_name_cancel"
+            android:text="Cancel" android:textAllCaps="false" android:layout_below="@id/txtInputCounterName"
+            android:layout_marginTop="10dp" android:layout_alignStart="@id/txtInputCounterName"
+            android:id="@+id/btnCancelCounterName" android:background="@drawable/back_counter_name_cancel"
             android:textColor="#FF0F00" android:layout_marginBottom="15dp"
-    android:textSize="16sp"/>
+            android:textSize="16sp"/>
 
     <Button android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="Confirm" android:textAllCaps="false" android:layout_below="@id/txtInputCounterName"

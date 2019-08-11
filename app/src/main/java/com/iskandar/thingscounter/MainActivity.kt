@@ -179,6 +179,9 @@ class MainActivity : AppCompatActivity() {
                 btnAddCounter.visibility = View.GONE
                 btnBackToList.visibility = View.VISIBLE
                 switchTo(addCounterFragment, TAG_FRAG_ADDCOUNTER)
+
+                // close dialog when done
+                dialogCounterName.dismiss()
             }
             else
             {
@@ -235,7 +238,7 @@ class CountersFragment : Fragment(){
     }
 
     @SuppressLint("SetTextI18n")
-    private fun refreshAdapter() {
+    fun refreshAdapter() {
         thingsCounted = getDataFromDB()
         if(thingsCounted.size==0)
         {
@@ -329,7 +332,7 @@ class CountersAdapter(private val context:Context) : BaseAdapter() {
     @SuppressLint("ViewHolder", "SimpleDateFormat")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
-        val v = LayoutInflater.from(context).inflate(R.layout.item_counter,parent)
+        val v = LayoutInflater.from(context).inflate(R.layout.item_counter,null)
         val current = thingsCounted[position]
 
         v.txtItemCounterName.text = current.name
@@ -357,8 +360,11 @@ class CountersAdapter(private val context:Context) : BaseAdapter() {
             .setPositiveButton("CONFIRM"){dialog, _ ->
                 countersDB.removeCounter(thingsCounted[pos].dateTime) // from db
                 thingsCounted.removeAt(pos) // from data list
-                notifyDataSetChanged() // refresh adapter
+                notifyDataSetChanged() // refresh adapter (From here) //
                 dialog.dismiss() // close dialog
+                // really refresh adapter (to change list accordingly ! )  // some "Action at a distance" ! //
+                val frag = (context as MainActivity).supportFragmentManager.findFragmentByTag(MainActivity.TAG_FRAG_COUNTERS)
+                (frag as CountersFragment).refreshAdapter()
             }
             .setNegativeButton("CANCEL"){dialog,_-> dialog.dismiss()}
             .create()
