@@ -257,8 +257,16 @@ class CountersAdapter(private val context:Context) : BaseAdapter() {
         v.txtItemCounterTime.text = SimpleDateFormat("yyyy-MM-dd , HH:mm:ss").format(Date(current.dateTime))
 
         v.btnCounterRemove.setOnClickListener { dialogRemoveQuery(position) }
+        v.layItemCounter.setOnClickListener { updateCounter(position) }
 
         return v
+    }
+
+    private fun updateCounter(pos: Int) {
+
+        // TODO
+        // switch to add fragment and load "pos" counter values there !
+
     }
 
     private fun dialogRemoveQuery(pos: Int) {
